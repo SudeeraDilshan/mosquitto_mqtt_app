@@ -2,6 +2,7 @@ from paho.mqtt import client as mqtt
 from fastapi import BackgroundTasks
 import json
 import os
+from models.event import Event
 
 class MqttService:
     def __init__(self):
@@ -21,9 +22,12 @@ class MqttService:
     def on_message(self, client, userdata, msg):
         print(f"Message received on topic {msg.topic}: {msg.payload.decode()}")
 
-    def publish(self, topic: str, message: dict):
-        self.client.publish(topic, json.dumps(message))
+    def publish(self, topic: str, message: Event):
+        self.client.publish(topic,message.model_dump())
+        return {"message": f"Details of event '{message.payload}' published"}
 
     def subscribe(self, topic: str, background_tasks: BackgroundTasks):
         self.client.subscribe(topic)
         self.client.on_message = lambda client, userdata, msg: background_tasks.add_task(self.on_message, client, userdata, msg)
+        
+    
