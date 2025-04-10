@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.mqtt_service import MqttService
 import uvicorn
-from models.event import Event
+from models.control_message import Event
 from controllers.helpers import fetch_services_data
 
 app = FastAPI()

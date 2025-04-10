@@ -2,7 +2,7 @@ from paho.mqtt import client as mqtt
 from fastapi import BackgroundTasks
 import json
 import os
-from models.event import Event
+from models.control_message import Event
 
 class MqttService:
     def __init__(self):
