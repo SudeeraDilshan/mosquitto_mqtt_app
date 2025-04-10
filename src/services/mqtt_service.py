@@ -1,8 +1,7 @@
 from paho.mqtt import client as mqtt
 from fastapi import BackgroundTasks
-import json
 import os
-from models.control_message import Event
+from models.control_message import ControlMessage
 
 class MqttService:
     def __init__(self):
@@ -22,7 +21,7 @@ class MqttService:
     def on_message(self, client, userdata, msg):
         print(f"Message received on topic {msg.topic}: {msg.payload.decode()}")
 
-    def publish(self, topic: str, message: Event):
+    def publish(self, topic: str, message: ControlMessage):
         self.client.publish(topic,message.model_dump())
         return {"message": f"Details of event '{message.payload}' published"}
 

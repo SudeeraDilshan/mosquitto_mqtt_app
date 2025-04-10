@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from services.mqtt_service import MqttService
 import uvicorn
-from models.control_message import Event
+from models.control_message import ControlMessage
 from controllers.helpers import fetch_services_data
 
 app = FastAPI()
@@ -21,7 +21,7 @@ mqtt_service = MqttService()
 
 # Define routes
 @app.post("/action")
-async def publish_event(event_data: Event):
+async def publish_event(event_data: ControlMessage):
     return await mqtt_service.publish(topic="test",message=event_data)
 
 @app.get("/service")
