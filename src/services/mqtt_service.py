@@ -22,11 +22,11 @@ class MqttService:
         print(f"Message received on topic {msg.topic}: {msg.payload.decode()}")
 
     def publish(self, topic: str, message: ControlMessage):
-        self.client.publish(topic,message.model_dump())
-        return {"message": f"Details of event '{message.payload}' published"}
+        message_str = str(message)  # Convert message to string
+        self.client.publish(topic, message_str)
+        return {"message": f"Details of event '{message_str}' published"}
 
     def subscribe(self, topic: str, background_tasks: BackgroundTasks):
         self.client.subscribe(topic)
         self.client.on_message = lambda client, userdata, msg: background_tasks.add_task(self.on_message, client, userdata, msg)
-        
-    
+
