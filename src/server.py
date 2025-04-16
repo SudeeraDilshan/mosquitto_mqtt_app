@@ -21,8 +21,8 @@ mqtt_service = MqttService()
 
 # Define routes
 @app.post("/action")
-async def publish_event(event_data: ControlMessage):
-    return await mqtt_service.publish(topic="test",message=event_data)
+def publish_event(event_data: ControlMessage):
+    return mqtt_service.publish(topic="test",message=event_data)
 
 @app.get("/service")
 async def get_consul_services():
