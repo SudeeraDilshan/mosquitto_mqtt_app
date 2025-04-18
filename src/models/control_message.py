@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field, model_validator
-from typing import Optional, Dict, Any, Literal
+from typing import Optional, Dict, Any
 from datetime import datetime
 from enum import Enum
 
@@ -13,11 +13,16 @@ class ActionType(str, Enum):
     TOOL_RELOAD = "TOOL_RELOAD"
     SET_PARAMETERS = "SET_PARAMETERS"
 
+class Priority(str, Enum):
+    LOW = "LOW"
+    MEDIUM = "MEDIUM"
+    HIGH = "HIGH"
+
 class ControlMessage(BaseModel):
     action_type: ActionType
     agent_id: str
     timestamp: datetime = Field(default_factory=datetime.now)
-    priority: Optional[Literal["LOW", "MEDIUM", "HIGH"]] = None
+    priority: Optional[Priority] = None
     payload: Dict[str, Any] = Field(default_factory=dict)
     message_id: Optional[str] = None
     require_ack: bool = True
@@ -30,15 +35,15 @@ class ControlMessage(BaseModel):
             self.priority = self.get_default_priority()
         return self
 
-    def get_default_priority(self) -> str:
+    def get_default_priority(self) -> Priority:
         action_priority_map = {
-            ActionType.SUSPEND: "HIGH",
-            ActionType.RESUME: "MEDIUM",
-            ActionType.RESTART: "HIGH",
-            ActionType.CONFIGURE: "MEDIUM",
-            ActionType.RESET_SESSION: "HIGH",
-            ActionType.REMOVE: "HIGH",
-            ActionType.TOOL_RELOAD: "MEDIUM",
-            ActionType.SET_PARAMETERS: "LOW",
+            ActionType.SUSPEND: Priority.HIGH,
+            ActionType.RESUME: Priority.MEDIUM,
+            ActionType.RESTART: Priority.HIGH,
+            ActionType.CONFIGURE: Priority.MEDIUM,
+            ActionType.RESET_SESSION: Priority.HIGH,
+            ActionType.REMOVE: Priority.HIGH,
+            ActionType.TOOL_RELOAD: Priority.MEDIUM,
+            ActionType.SET_PARAMETERS: Priority.LOW,
         }
-        return action_priority_map.get(self.action_type, "MEDIUM")
+        return action_priority_map.get(self.action_type, Priority.MEDIUM)
