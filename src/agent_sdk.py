@@ -86,9 +86,12 @@ def on_connect(client, userdata, flags, rc):
 
 def on_message(client, userdata, msg):
     try:
-        payload = json.loads(msg.payload.decode())
-        message = ControlMessage(**payload)
-        handle_message(message)
+        message=msg.payload.decode()
+        # payload = json.loads(msg.payload.decode())
+        # print(payload)
+        # message = ControlMessage(**payload)
+        print(f"Received message: {message}")
+        # handle_message(message)
     except ValidationError as e:
         print(f"Invalid message format: {e}")
     except Exception as e:
@@ -101,7 +104,16 @@ def start_listener():
     client.on_connect = on_connect
     client.on_message = on_message
 
-    client.connect("localhost", 1883, 60)
+    # Connect to the MQTT broker (ensure the broker URL and port match the server)
+    broker_url = "localhost"  # Replace with the actual broker URL if needed
+    broker_port = 1883  # Replace with the actual broker port if needed
+    client.connect(broker_url, broker_port, 60)
+
+    # Subscribe to the topic where messages are published
+    topic = "test"  # Replace with the topic used by the server
+    client.subscribe(topic)
+
+    print(f"Subscribed to topic: {topic}")
     client.loop_forever()
 
 
